@@ -5,8 +5,10 @@ import java.util.Random;
 
 
 public class Board {
+
     private int size;
     private int mines;
+    int count =0;
     int mineC = 0;
     char safe = '.';
     char mine = 'X';
@@ -51,8 +53,38 @@ public class Board {
                 mineC++;
             }
         }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] != mine) {
+                    minesT = count(i,j);
+                      if (minesT == 0)
+                      board[i][j] = safe;
+                    else
+                        board[i][j] = Character.forDigit(minesT,10);;
+                }
+            }
+        }
+
     }
 
+    private int count(int row, int col) {
+        int totalMines = 0;
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                try {
+                    if (mine==(board[row + i][col + j])) {
+                        totalMines++;
+                    }
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
+            }
+        }
+        return totalMines;
+    }
 
 }
+
+
+
 
