@@ -8,31 +8,34 @@ public class Board {
 
     private int size;
     private int mines;
-    int count =0;
+    int count = 0;
     int mineC = 0;
     char safe = '.';
     char mine = 'X';
 
-    private char[][] board;
-    private char[][] moves;
+    private char[][] boardBack;
+    private char[][] boardFront;
+
+    boolean runGame;
 
     public Board(int mines) {
         this.mines = mines;
-        board = new char[9][9];
-        moves = new char[9][9];
+        boardBack = new char[9][9];
+        boardFront = new char[9][9];
+        runGame = true;
 
     }
 
     public void printBoard(int x) {
         int r = 1;
-//        System.out.print(" |123456789| \n");
-        for (char[] chars : board) {
-//            System.out.print(r + "|");
+        System.out.print(" |123456789| \n");
+        for (char[] chars : boardFront) {
+            System.out.print(r + "|");
             for (char a : chars) {
                 System.out.print(a);
             }
-//            System.out.print("| ");
-//            r++;
+            System.out.print("| ");
+            r++;
             System.out.println();
         }
     }
@@ -42,25 +45,29 @@ public class Board {
         int x;
         int y;
         Random random = new Random();
-        for (char[] chars : board) {
+        for (char[] chars : boardBack) {
+            Arrays.fill(chars, safe);
+        }
+        for (char[] chars : boardFront) {
             Arrays.fill(chars, safe);
         }
         while (mineC < mines) {
             x = random.nextInt(9);
             y = random.nextInt(9);
-            if (board[x][y] != mine) {
-                board[x][y] = mine;
+            if (boardBack[x][y] != mine) {
+                boardBack[x][y] = mine;
                 mineC++;
             }
         }
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] != mine) {
-                    minesT = count(i,j);
-                      if (minesT == 0)
-                      board[i][j] = safe;
+        for (int i = 0; i < boardBack.length; i++) {
+            for (int j = 0; j < boardBack[i].length; j++) {
+                if (boardBack[i][j] != mine) {
+                    minesT = count(i, j);
+                    if (minesT == 0)
+                        boardBack[i][j] = safe;
                     else
-                        board[i][j] = Character.forDigit(minesT,10);;
+                        boardBack[i][j] = Character.forDigit(minesT, 10);
+
                 }
             }
         }
@@ -73,7 +80,7 @@ public class Board {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 try {
-                    if (mine==(board[row + i][col + j])) {
+                    if (mine == (boardBack[row + i][col + j])) {
                         totalMines++;
                     }
                 } catch (ArrayIndexOutOfBoundsException ignored) {
@@ -83,8 +90,18 @@ public class Board {
         return totalMines;
     }
 
-}
+    public boolean check(int i, int j) {
+        if (i >= 0 && i < boardBack.length && j >= 0 && j < boardBack[i].length) {
 
+            return true;
+        }
+        System.out.println("Coordinates should be from 1 to 9");
+        return true;
+    }
+    public void move(int i, int j){
+
+    }
+}
 
 
 
