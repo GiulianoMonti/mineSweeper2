@@ -12,9 +12,10 @@ public class Board {
     int mineC = 0;
     char safe = '.';
     char mine = 'X';
+    char addMine = '*';
 
-    private char[][] boardBack;
-    private char[][] boardFront;
+    private final char[][] boardBack;
+    private final char[][] boardFront;
 
     boolean runGame;
 
@@ -26,9 +27,10 @@ public class Board {
 
     }
 
-    public void printBoard(int x) {
+    public void printBoard() {
         int r = 1;
-        System.out.print(" |123456789| \n");
+        System.out.println(" |123456789| \n" +
+                "-|---------| ");
         for (char[] chars : boardFront) {
             System.out.print(r + "|");
             for (char a : chars) {
@@ -38,6 +40,7 @@ public class Board {
             r++;
             System.out.println();
         }
+        System.out.println("-|---------| ");
     }
 
     public void createBoard() {
@@ -63,11 +66,13 @@ public class Board {
             for (int j = 0; j < boardBack[i].length; j++) {
                 if (boardBack[i][j] != mine) {
                     minesT = count(i, j);
-                    if (minesT == 0)
+                    if (minesT == 0) {
                         boardBack[i][j] = safe;
-                    else
+                        boardFront[i][j] = safe;
+                    } else {
                         boardBack[i][j] = Character.forDigit(minesT, 10);
-
+                        boardFront[i][j] = Character.forDigit(minesT, 10);
+                    }
                 }
             }
         }
@@ -98,8 +103,38 @@ public class Board {
         System.out.println("Coordinates should be from 1 to 9");
         return true;
     }
-    public void move(int i, int j){
 
+    public void move(int i, int j) {
+
+        if (boardBack[i][j] == mine) {
+
+            boardFront[i][j] = addMine;
+            this.count++;
+            System.out.println(count);
+            checkWin();
+
+        } else if (boardBack[i][j] == safe) {
+            boardBack[i][j] = addMine;
+            boardFront[i][j] = addMine;
+
+        } else if (boardBack[i][j] == addMine) {
+            boardBack[i][j] = safe;
+            boardFront[i][j] = safe;
+
+        } else if (boardBack[i][j] != safe && boardBack[i][j] > 0) {
+            System.out.println("there is a number here!!");
+            return;
+        }
+
+
+    }
+
+    public void checkWin() {
+
+        if (this.count == this.mines) {
+            System.out.println("Congratulations! You found all mines!");
+            runGame = false;
+        }
     }
 }
 
