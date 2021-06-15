@@ -16,8 +16,8 @@ public class Main {
             board.printBoard();
             System.out.println("Set/delete mine marks (x and y coordinates):");
             String[] c = sc.nextLine().split(" ");
-            if (board.check(Integer.parseInt(c[1]) - 1, Integer.parseInt(c[0]) - 1)) {
-                board.move(Integer.parseInt(c[1]) - 1, Integer.parseInt(c[0]) - 1);
+            if (board.check(Integer.parseInt(c[1]) - 1, Integer.parseInt(c[0]) - 1,c[2])) {
+                board.move(Integer.parseInt(c[1]) - 1, Integer.parseInt(c[0]) - 1,c[2]);
             }
         }
 

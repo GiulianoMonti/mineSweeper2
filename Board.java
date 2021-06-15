@@ -7,7 +7,7 @@ import java.util.Random;
 public class Board {
 
     private int size;
-    private int mines;
+    private final int mines;
     int count = 0;
     int mineC = 0;
     char safe = '.';
@@ -95,7 +95,7 @@ public class Board {
         return totalMines;
     }
 
-    public boolean check(int i, int j) {
+    public boolean check(int i, int j, String s) {
         if (i >= 0 && i < boardBack.length && j >= 0 && j < boardBack[i].length) {
 
             return true;
@@ -104,35 +104,51 @@ public class Board {
         return true;
     }
 
-    public void move(int i, int j) {
+    public void move(int i, int j, String s) {
 
-        if (boardBack[i][j] == mine) {
+        if ("m".equals(s)) {
+            moveMine(i, j);
 
-            boardFront[i][j] = addMine;
-            this.count++;
-            System.out.println(count);
-            checkWin();
+        }
+        if ("f".equals(s)) {
+            moveFree(i, j);
+        }
+    }
 
-        } else if (boardBack[i][j] == safe) {
+    public void moveMine(int i, int j) {
+        if (boardBack[i][j] == safe) {
             boardBack[i][j] = addMine;
             boardFront[i][j] = addMine;
 
+        } else if (boardBack[i][j] == mine) {
+            boardFront[i][j] = addMine;
+            if (boardFront[i][j] == addMine) {
+                count++;
+            }
         } else if (boardBack[i][j] == addMine) {
             boardBack[i][j] = safe;
             boardFront[i][j] = safe;
-
+            count--;
         } else if (boardBack[i][j] != safe && boardBack[i][j] > 0) {
             System.out.println("there is a number here!!");
             return;
         }
-
+        checkWin();
 
     }
+
+
+
+    public void moveFree(int i, int j) {
+
+    }
+
 
     public void checkWin() {
 
         if (this.count == this.mines) {
             System.out.println("Congratulations! You found all mines!");
+            printBoard();
             runGame = false;
         }
     }
