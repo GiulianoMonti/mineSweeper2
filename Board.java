@@ -68,10 +68,8 @@ public class Board {
                     minesT = count(i, j);
                     if (minesT == 0) {
                         boardBack[i][j] = safe;
-                        boardFront[i][j] = safe;
                     } else {
                         boardBack[i][j] = Character.forDigit(minesT, 10);
-                        boardFront[i][j] = Character.forDigit(minesT, 10);
                     }
                 }
             }
@@ -119,7 +117,6 @@ public class Board {
         if (boardBack[i][j] == safe) {
             boardBack[i][j] = addMine;
             boardFront[i][j] = addMine;
-
         } else if (boardBack[i][j] == mine) {
             boardFront[i][j] = addMine;
             if (boardFront[i][j] == addMine) {
@@ -134,12 +131,18 @@ public class Board {
             return;
         }
         checkWin();
-
     }
 
 
-
     public void moveFree(int i, int j) {
+        if (boardBack[i][j] > 0) {
+            boardFront[i][j] = boardBack[i][j];
+        }
+        if (boardBack[i][j] == mine) {
+            System.out.println("you stepped on a mine and failed!");
+            runGame = false;
+            printBoard();
+        }
 
     }
 
