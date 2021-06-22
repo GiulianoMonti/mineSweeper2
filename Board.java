@@ -6,14 +6,13 @@ import java.util.Random;
 
 public class Board {
 
-    private int size;
     private final int mines;
     int count = 0;
     int mineC = 0;
     char safe = '.';
     char mine = 'X';
     char addMine = '*';
-
+    char freeSpace = '/';
     private final char[][] boardBack;
     private final char[][] boardFront;
 
@@ -26,6 +25,25 @@ public class Board {
         runGame = true;
 
     }
+
+    // TEST BOARD IN THE BACK
+
+//    public void testBoard() {
+//        int r = 1;
+//        System.out.println(" |123456789| \n" +
+//                "-|---------| ");
+//        for (char[] chars : boardBack) {
+//            System.out.print(r + "|");
+//            for (char a : chars) {
+//                System.out.print(a);
+//            }
+//            System.out.print("| ");
+//            r++;
+//            System.out.println();
+//        }
+//        System.out.println("-|---------| ");
+//    }
+
 
     public void printBoard() {
         int r = 1;
@@ -102,34 +120,38 @@ public class Board {
         return true;
     }
 
-    public void move(int i, int j, String s) {
+    public void move(int i, int j, String s) {  // needs to be fixed too, if you write wrong option return
 
-        if ("m".equals(s)) {
+        if ("mine".equals(s)) {
             moveMine(i, j);
 
-        }
-        if ("f".equals(s)) {
+        }else
+        if ("free".equals(s)) {
             moveFree(i, j);
+        }else{
+            System.out.println("Wrong option |write free or mine");
+            return;
         }
     }
 
     public void moveMine(int i, int j) {
-        if (boardBack[i][j] == safe) {
-            boardBack[i][j] = addMine;
+        if (boardFront[i][j] == addMine) {
+
+            boardFront[i][j] = safe;
+            count--;
+            return;
+        } else {
             boardFront[i][j] = addMine;
-        } else if (boardBack[i][j] == mine) {
+
+        }
+
+        if (boardBack[i][j] == mine) {
             boardFront[i][j] = addMine;
             if (boardFront[i][j] == addMine) {
                 count++;
             }
-        } else if (boardBack[i][j] == addMine) {
-            boardBack[i][j] = safe;
-            boardFront[i][j] = safe;
-            count--;
-        } else if (boardBack[i][j] != safe && boardBack[i][j] > 0) {
-            System.out.println("there is a number here!!");
-            return;
         }
+
         checkWin();
     }
 
@@ -143,7 +165,38 @@ public class Board {
             runGame = false;
             printBoard();
         }
+        if (boardBack[i][j] == safe) {
 
+            floodFill(i, j);
+
+        }
+
+    }
+
+
+    // check free spaces // chequea los espacios vacios
+    void floodFill(int x, int y) {
+        if (x < 0 || y < 0 || y > 8 || x > 8 || boardBack[x][y] < 9)
+            return;
+        if (boardBack[x][y] != safe) {
+            boardFront[x][y] = boardBack[x][y];
+        }
+        if (boardBack[x][y] == addMine) {
+            boardFront[x][y] = freeSpace;
+        }
+        if (boardBack[x][y] == safe) {
+            boardBack[x][y] = freeSpace;
+            boardFront[x][y] = freeSpace;
+            floodFill(x + 1, y);
+            floodFill(x - 1, y);
+            floodFill(x, y - 1);
+            floodFill(x, y + 1);
+            floodFill(x+1, y + 1);
+            floodFill(x-1, y - 1);
+            floodFill(x-1, y + 1);
+            floodFill(x+1, y - 1);
+
+        }
     }
 
 
